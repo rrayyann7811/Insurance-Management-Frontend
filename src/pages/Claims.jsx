@@ -1,3 +1,4 @@
+import { ListFilters, Pagination, useList } from '../components/ListFilters';
 import { DocumentPanel } from './Documents';
 import { Link, useParams } from 'react-router-dom';
 import { ApiForm, DataState, Status, Table } from '../components/Controls';
@@ -7,16 +8,16 @@ import { day, money } from '../utils/format';
 
 export function Claims() {
   const { user } = useAuth();
-  const list = useData('/claims');
-  const policies = useData(user.role === 'CUSTOMER' ? '/policies' : null);
+  const list = useList('/claims');
+  const policies = useData(user.role === 'CUSTOMER' ? '/policies/options' : null);
   return <><h1>{user.role === 'CUSTOMER' ? 'My claims' : user.role === 'AGENT' ? 'Assigned claims' : 'Claims'}</h1>
-    <section className="panel"><DataState result={list}>{claims => <Table headers={['Policy', 'Amount', 'Incident', 'Status', 'Agent', 'Details']}
-      rows={claims.map(claim => [claim.id, claim.policy.number, money(claim.amount), day(claim.incidentDate),
+    <section className="panel"><ListFilters list={list} statuses={['SUBMITTED', 'UNDER_REVIEW', 'APPROVED', 'REJECTED']} /><DataState result={list}>{data => <><Table headers={['Policy', 'Amount', 'Incident', 'Status', 'Agent', 'Details']}
+      rows={data.items.map(claim => [claim.id, claim.policy.number, money(claim.amount), day(claim.incidentDate),
         <Status value={claim.status} />, claim.agent?.name || 'Unassigned', <Link to={`/claims/${claim.id}`}>View claim</Link>,
-      ])} />}</DataState></section>
+      ])} /><Pagination list={list} data={data} /></>}</DataState></section>
     {user.role === 'CUSTOMER' && <section className="panel"><h2>Submit a claim</h2>
       <DataState result={policies}>{records => {
-        const eligible = records.filter(policy => policy.status !== 'CANCELLED');
+        const eligible = records;
         return eligible.length ? <ApiForm path="/claims" action="Submit claim" onSuccess={list.reload}>
           <label>Policy<select name="policyId" required>{eligible.map(policy => <option key={policy.id} value={policy.id}>{policy.type} · {policy.number}</option>)}</select></label>
           <label>Amount (INR)<input name="amount" type="number" min=".01" step=".01" required /></label>

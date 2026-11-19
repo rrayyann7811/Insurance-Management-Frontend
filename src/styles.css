@@ -47,3 +47,7 @@ td a { text-decoration: underline; overflow-wrap: anywhere; }
 .report-summary { display: grid; grid-template-columns: 1fr auto; max-width: 30rem; gap: .5rem 1rem; margin: 1rem 0; }
 .report-summary dd { text-align: right; }
 td .actions { margin: 0; }
+.panel .filters { display: flex; flex-wrap: wrap; align-items: end; max-width: none; margin: 0 0 1rem; }
+.filters label { min-width: 9rem; }
+.pagination { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; margin-top: .85rem; }
+.pagination button:disabled { cursor: default; }

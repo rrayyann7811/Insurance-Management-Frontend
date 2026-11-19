@@ -1,3 +1,4 @@
+import { ListFilters, Pagination, useList } from '../components/ListFilters';
 import { Link, useParams } from 'react-router-dom';
 import { ApiForm, DataState, Status, Table } from '../components/Controls';
 import { useAuth } from '../context/Auth';
@@ -18,11 +19,11 @@ function CustomerFields({ customer }) {
 }
 
 export function Customers() {
-  const list = useData('/customers');
+  const list = useList('/customers');
   return <><h1>Customers</h1>
-    <section className="panel"><DataState result={list}>{customers => <Table headers={['Name', 'Email', 'Agent', 'Registered']}
-      rows={customers.map(customer => [customer.id, <Link to={`/customers/${customer.id}`}>{customer.user.name}</Link>,
-        customer.user.email, customer.agent?.name || 'Unassigned', day(customer.createdAt)])} />}</DataState></section>
+    <section className="panel"><ListFilters list={list} /><DataState result={list}>{data => <><Table headers={['Name', 'Email', 'Agent', 'Registered']}
+      rows={data.items.map(customer => [customer.id, <Link to={`/customers/${customer.id}`}>{customer.user.name}</Link>,
+        customer.user.email, customer.agent?.name || 'Unassigned', day(customer.createdAt)])} /><Pagination list={list} data={data} /></>}</DataState></section>
     <section className="panel"><h2>Register customer</h2>
       <ApiForm path="/customers" action="Register customer" onSuccess={list.reload}><CustomerFields /></ApiForm>
     </section>
