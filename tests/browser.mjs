@@ -65,9 +65,16 @@ try {
   await page.getByRole('link', { name: 'POL-DEMO-ROWAN' }).waitFor();
   await page.reload();
   await page.getByRole('link', { name: 'POL-DEMO-ROWAN' }).waitFor();
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.equal(await page.getByRole('link', { name: 'My Policies' }).isVisible(), false);
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
+  await page.getByRole('link', { name: 'My Claims' }).click();
+  await page.getByRole('heading', { name: 'My claims' }).waitFor();
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  await page.getByRole('button', { name: 'Menu', exact: true }).click();
   await logout();
   assert.deepEqual(errors, []);
-  console.log('Browser smoke passed for admin, agent and customer.');
+  console.log('Browser smoke passed for admin, agent and customer, including mobile navigation.');
 } finally {
   await browser.close();
 }
