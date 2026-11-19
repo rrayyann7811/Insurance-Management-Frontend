@@ -1,7 +1,7 @@
 import { passwordHelp, passwordPattern } from '../utils/password';
 import { ListFilters, Pagination, useList } from '../components/ListFilters';
 import { Link, useParams } from 'react-router-dom';
-import { ApiForm, DataState, Status, Table } from '../components/Controls';
+import { Action, ApiForm, DataState, Status, Table } from '../components/Controls';
 import { useAuth } from '../context/Auth';
 import { useData } from '../hooks/useData';
 import { day, money } from '../utils/format';
@@ -40,12 +40,16 @@ export function CustomerDetail({ profile = false }) {
   return <><h1>{profile ? 'My profile' : 'Customer profile'}</h1><DataState result={result}>{customer => <>
     <section className="panel">
       <h2>{customer.user.name}</h2><p className="muted">{customer.user.email}</p>
+      {customer.archivedAt && <p className="notice">Archived {day(customer.archivedAt)}</p>}
+      {!customer.archivedAt && <>
       <ApiForm path={path} method="patch" action="Save profile" onSuccess={updated => {
         if (profile) setUser(updated.user);
         result.reload();
       }}><CustomerFields customer={customer} /></ApiForm>
+      {user.role === 'ADMIN' && <div className="actions"><Action path={path} method="delete" onSuccess={result.reload}>Archive customer</Action></div>}
+      </>}
     </section>
-    {user.role === 'ADMIN' && <section className="panel"><h2>Agent assignment</h2>
+    {user.role === 'ADMIN' && !customer.archivedAt && <section className="panel"><h2>Agent assignment</h2>
       <DataState result={agents}>{records => {
         const active = records.filter(agent => agent.active);
         return active.length ? <ApiForm path={`/customers/${customer.id}/assign`} method="patch" action="Assign agent" onSuccess={result.reload}>

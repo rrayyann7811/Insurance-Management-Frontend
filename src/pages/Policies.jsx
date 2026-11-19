@@ -16,12 +16,12 @@ export function Policies() {
   const { user } = useAuth();
   const list = useList('/policies');
   const customers = useData(user.role !== 'CUSTOMER' ? '/customers/options' : null);
-  const cutoff = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10);
+
   return <><h1>{user.role === 'CUSTOMER' ? 'My policies' : 'Policies'}</h1>
     <section className="panel"><ListFilters list={list} statuses={['ACTIVE', 'EXPIRED', 'CANCELLED']} /><DataState result={list}>{data => <><Table
       headers={['Policy', 'Customer', 'Type', 'Status', 'Expiry', 'Premium']} rows={data.items.map(policy => [
         policy.id, <Link to={`/policies/${policy.id}`}>{policy.number}</Link>, policy.customer.user.name,
-        policy.type, <Status value={policy.status} />, <>{day(policy.endDate)}{policy.status === 'ACTIVE' && day(policy.endDate) <= cutoff && <small className="notice">Expiring soon</small>}</>, money(policy.premium),
+        policy.type, <Status value={policy.status} />, <>{day(policy.endDate)}{policy.status === 'ACTIVE' && day(policy.endDate) <= new Date(Date.now() + data.expiryAlertDays * 86400000).toISOString().slice(0, 10) && <small className="notice">Expiring soon</small>}</>, money(policy.premium),
       ])} /><Pagination list={list} data={data} /></>}</DataState></section>
     {user.role !== 'CUSTOMER' && <section className="panel"><h2>Create policy</h2>
       <DataState result={customers}>{records => records.length ? <ApiForm path="/policies" action="Create policy" onSuccess={list.reload}>
