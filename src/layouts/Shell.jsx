@@ -4,8 +4,11 @@ import { useAuth } from '../context/Auth';
 
 export function Shell({ links }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, sessionError, restoreSession } = useAuth();
   if (loading) return <main className="content">Loading session…</main>;
+  if (!user && sessionError) return <main className="content">
+    <p role="alert">{sessionError}</p><button onClick={restoreSession}>Retry session</button>
+  </main>;
   if (!user) return <Navigate to="/login" replace />;
   return <div className="shell">
     <aside className={menuOpen ? "sidebar menu-open" : "sidebar"}>
@@ -20,6 +23,7 @@ export function Shell({ links }) {
       </nav>
       <div className="sidebar-account"><span>{user.name}</span><small>{user.role.toLowerCase()}</small>
         <button className="secondary" onClick={logout}>Sign out</button>
+        {sessionError && <small role="alert">{sessionError}</small>}
       </div>
       </div>
     </aside>
