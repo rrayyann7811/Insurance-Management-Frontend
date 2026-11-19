@@ -1,17 +1,18 @@
+import { passwordHelp, passwordPattern } from '../utils/password';
 import { ListFilters, Pagination, useList } from '../components/ListFilters';
 import { Link, useParams } from 'react-router-dom';
 import { ApiForm, DataState, Status, Table } from '../components/Controls';
 import { useAuth } from '../context/Auth';
 import { useData } from '../hooks/useData';
-import { day } from '../utils/format';
+import { day, money } from '../utils/format';
 
 function CustomerFields({ customer }) {
   return <>
     <label>Name<input name="name" required minLength={2} maxLength={100} defaultValue={customer?.user.name} /></label>
     {!customer && <>
       <label>Email<input name="email" type="email" required /></label>
-      <label>Initial password<input name="password" type="password" required minLength={12} maxLength={72} autoComplete="new-password" /></label>
-      <p className="muted">Use at least 12 characters with uppercase, lowercase and a digit.</p>
+      <label>Initial password<input name="password" type="password" required minLength={12} maxLength={72} pattern={passwordPattern} title={passwordHelp} autoComplete="new-password" /></label>
+      <p className="muted">{passwordHelp}</p>
     </>}
     <label>Phone<input name="phone" type="tel" maxLength={40} defaultValue={customer?.phone ?? ''} /></label>
     <label>Address<textarea name="address" maxLength={300} defaultValue={customer?.address ?? ''} /></label>
@@ -59,6 +60,16 @@ export function CustomerDetail({ profile = false }) {
       <Table headers={['Policy', 'Type', 'Status', 'Expiry']} rows={customer.policies.map(policy => [
         policy.id, <Link to={`/policies/${policy.id}`}>{policy.number}</Link>, policy.type, <Status value={policy.status} />, day(policy.endDate),
       ])} />
+    </section>
+    <section className="panel"><h2>Claim history</h2>
+      <Table headers={['Policy', 'Submitted', 'Status']} rows={customer.policies.flatMap(policy => policy.claims.map(claim => [
+        claim.id, <Link to={`/claims/${claim.id}`}>{policy.number}</Link>, day(claim.createdAt), <Status value={claim.status} />,
+      ]))} />
+    </section>
+    <section className="panel"><h2>Premium history</h2>
+      <Table headers={['Policy', 'Amount', 'Due', 'Paid']} rows={customer.policies.flatMap(policy => policy.payments.map(payment => [
+        payment.id, policy.number, money(payment.amount), day(payment.dueDate), day(payment.paidAt),
+      ]))} />
     </section>
   </>}</DataState></>;
 }

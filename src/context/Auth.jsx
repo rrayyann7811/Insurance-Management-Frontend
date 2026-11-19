@@ -13,6 +13,11 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    window.addEventListener('insurance-session-expired', logout);
+    return () => window.removeEventListener('insurance-session-expired', logout);
+  }, []);
+
+  useEffect(() => {
     if (!sessionStorage.getItem('insurance-token')) return;
     api.get('/auth/me').then(({ data }) => setUser(data)).catch(logout).finally(() => setLoading(false));
   }, []);

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/Auth';
@@ -9,10 +10,11 @@ import { Claims, ClaimDetail } from './pages/Claims';
 import { Premiums } from './pages/Premiums';
 import { Agents } from './pages/Agents';
 import { AgentProfile } from './pages/AgentProfile';
-import { Dashboard } from './pages/Dashboard';
 import { Documents } from './pages/Documents';
 import { Reports, Settings } from './pages/Reports';
 import './styles.css';
+
+const Dashboard = lazy(() => import('./pages/Dashboard').then(module => ({ default: module.Dashboard })));
 
 function RoleRoute({ roles, children }) {
   const { user } = useAuth();
@@ -41,7 +43,7 @@ createRoot(document.getElementById('root')).render(<BrowserRouter><AuthProvider>
   <Route path="/login" element={<AuthPage key="login" />} />
   <Route path="/register" element={<AuthPage key="register" register />} />
   <Route element={<Navigation />}>
-    <Route index element={<Dashboard />} />
+    <Route index element={<Suspense fallback={<p role="status">Loading dashboard…</p>}><Dashboard /></Suspense>} />
     <Route path="customers" element={<RoleRoute roles={['ADMIN', 'AGENT']}><Customers /></RoleRoute>} />
     <Route path="customers/:id" element={<RoleRoute roles={['ADMIN', 'AGENT']}><CustomerDetail /></RoleRoute>} />
     <Route path="policies" element={<Policies />} />

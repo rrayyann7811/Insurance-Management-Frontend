@@ -1,3 +1,4 @@
+import { passwordHelp, passwordPattern } from '../utils/password';
 import { ApiForm, DataState, Table } from '../components/Controls';
 import { useData } from '../hooks/useData';
 
@@ -14,8 +15,8 @@ export function Agents() {
     <section className="panel"><h2>Create agent</h2><ApiForm path="/agents" action="Create agent" onSuccess={list.reload}>
       <label>Name<input name="name" required minLength={2} maxLength={100} /></label>
       <label>Email<input name="email" type="email" required /></label>
-      <label>Initial password<input name="password" type="password" minLength={12} maxLength={72} autoComplete="new-password" required /></label>
-      <p className="muted">Use at least 12 characters with uppercase, lowercase and a digit.</p>
+      <label>Initial password<input name="password" type="password" minLength={12} maxLength={72} pattern={passwordPattern} title={passwordHelp} autoComplete="new-password" required /></label>
+      <p className="muted">{passwordHelp}</p>
     </ApiForm></section>
   </>;
 }

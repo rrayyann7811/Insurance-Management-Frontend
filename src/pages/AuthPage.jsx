@@ -1,3 +1,4 @@
+import { passwordHelp, passwordPattern } from '../utils/password';
 import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/Auth';
@@ -30,8 +31,8 @@ export function AuthPage({ register = false }) {
       <form onSubmit={submit}>
         {register && <label>Full name<input name="name" autoComplete="name" required minLength={2} maxLength={100} /></label>}
         <label>Email<input name="email" type="email" autoComplete="email" required maxLength={254} /></label>
-        <label>Password<input name="password" type="password" autoComplete={register ? 'new-password' : 'current-password'} required minLength={register ? 12 : 1} maxLength={72} /></label>
-        {register && <p className="muted">Use 12 or more characters with uppercase, lowercase and a digit.</p>}
+        <label>Password<input name="password" type="password" autoComplete={register ? 'new-password' : 'current-password'} required minLength={register ? 12 : 1} maxLength={72} pattern={register ? passwordPattern : undefined} title={register ? passwordHelp : undefined} /></label>
+        {register && <p className="muted">{passwordHelp}</p>}
         {message && <p className="error" role="alert">{message}</p>}
         <button disabled={busy}>{busy ? 'Please wait…' : register ? 'Register' : 'Sign in'}</button>
       </form>

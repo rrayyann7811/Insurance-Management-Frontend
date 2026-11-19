@@ -51,3 +51,6 @@ td .actions { margin: 0; }
 .filters label { min-width: 9rem; }
 .pagination { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; margin-top: .85rem; }
 .pagination button:disabled { cursor: default; }
+.document-preview { margin: 1rem 0; }
+.document-preview iframe { display: block; width: 100%; min-height: 32rem; margin-top: .7rem; border: 1px solid #d8e0ea; }
+.document-preview img { display: block; max-width: 100%; max-height: 32rem; margin-top: .7rem; }
