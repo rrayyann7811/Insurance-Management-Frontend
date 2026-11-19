@@ -26,3 +26,16 @@ form button { justify-self: start; }
 .sidebar a.active { background: #2b4b70; }
 .content { padding: 1.5rem; min-width: 0; }
 .secondary { background: #e5edf7; color: #173250; }
+.table-scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; text-align: left; }
+th, td { padding: .65rem .8rem; border-bottom: 1px solid #d8e0ea; vertical-align: top; }
+th { background: #edf2f8; white-space: nowrap; }
+td a { text-decoration: underline; overflow-wrap: anywhere; }
+.status { display: inline-block; border-radius: 1rem; background: #e7edf6; color: #243653; padding: .18rem .55rem; white-space: nowrap; text-transform: capitalize; }
+.status.active, .status.paid, .status.approved { background: #dcefe4; color: #1c5c3d; }
+.status.cancelled, .status.rejected, .status.overdue { background: #f7e3e3; color: #8a2727; }
+.status.expired, .status.pending, .status.under_review { background: #f7edd4; color: #6d4d10; }
+.notice { display: block; color: #6d4d10; }
+.actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .8rem; }
+.action small { display: block; }
+.panel form { max-width: 35rem; margin-top: .7rem; }
