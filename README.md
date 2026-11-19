@@ -9,3 +9,5 @@ Start the backend with fictional demo data and run the frontend at localhost por
 ## Deployment
 
 Import this repository in Vercel and set `VITE_API_URL` to the public Render API ending in `/api`. Use the resulting HTTPS frontend origin for the backend's `FRONTEND_ORIGIN`.
+
+Run `npm run lint` and `npm test` for static and configuration checks. Set an HTTPS `VITE_API_URL` ending in `/api` for `npm run build`. For a built local preview, run `npm run build -- --mode development`. The browser workflow creates and archives fictional records. Point it only at a dedicated development or test database.

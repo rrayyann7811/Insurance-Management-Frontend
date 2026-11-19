@@ -1,7 +1,6 @@
 import { ListFilters, Pagination, useList } from '../components/ListFilters';
 import { Action, DataState, Status, Table } from '../components/Controls';
 import { useAuth } from '../context/Auth';
-import { useData } from '../hooks/useData';
 import { day, money } from '../utils/format';
 
 export function Premiums() {

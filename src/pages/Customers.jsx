@@ -22,9 +22,9 @@ function CustomerFields({ customer }) {
 export function Customers() {
   const list = useList('/customers');
   return <><h1>Customers</h1>
-    <section className="panel"><ListFilters list={list} /><DataState result={list}>{data => <><Table headers={['Name', 'Email', 'Agent', 'Registered']}
+    <section className="panel"><ListFilters list={list} /><DataState result={list}>{data => <><Table headers={['Name', 'Email', 'Agent', 'Account', 'Registered']}
       rows={data.items.map(customer => [customer.id, <Link to={`/customers/${customer.id}`}>{customer.user.name}</Link>,
-        customer.user.email, customer.agent?.name || 'Unassigned', day(customer.createdAt)])} /><Pagination list={list} data={data} /></>}</DataState></section>
+        customer.user.email, customer.agent?.name || 'Unassigned', customer.archivedAt ? 'Archived' : 'Active', day(customer.createdAt)])} /><Pagination list={list} data={data} /></>}</DataState></section>
     <section className="panel"><h2>Register customer</h2>
       <ApiForm path="/customers" action="Register customer" onSuccess={list.reload}><CustomerFields /></ApiForm>
     </section>

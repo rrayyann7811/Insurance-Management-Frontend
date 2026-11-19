@@ -1,10 +1,12 @@
 import { Action, ApiForm, DataState, Table } from '../components/Controls';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { api, errorMessage } from '../services/api';
 import { Download } from '../components/Download';
 import { useAuth } from '../context/Auth';
 import { useData } from '../hooks/useData';
 import { day } from '../utils/format';
+
+const PdfPreview = lazy(() => import('../components/PdfPreview'));
 
 export function Documents() {
   const { user } = useAuth();
@@ -51,7 +53,7 @@ export function DocumentPanel({ claim }) {
     {preview && <section className="document-preview" aria-label="Document preview">
       <h3>{preview.filename}</h3>
       <button type="button" className="secondary" onClick={() => setPreview(null)}>Close preview</button>
-      {preview.type === 'application/pdf' ? <iframe title={preview.filename} src={preview.url} /> :
+      {preview.type === 'application/pdf' ? <Suspense fallback={<p role="status">Loading PDF preview…</p>}><PdfPreview key={preview.url} url={preview.url} /></Suspense> :
         <img alt={preview.filename} src={preview.url} />}
     </section>}
     {user.role === 'CUSTOMER' && open && <ApiForm path="/documents" action="Upload document" multipart onSuccess={list.reload}>
