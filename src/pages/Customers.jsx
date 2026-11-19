@@ -31,7 +31,8 @@ export function Customers() {
 
 export function CustomerDetail({ profile = false }) {
   const { id } = useParams();
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
+  const agents = useData(user.role === 'ADMIN' ? '/agents' : null);
   const path = `/customers/${profile ? 'me' : id}`;
   const result = useData(path);
   return <><h1>{profile ? 'My profile' : 'Customer profile'}</h1><DataState result={result}>{customer => <>
@@ -42,6 +43,17 @@ export function CustomerDetail({ profile = false }) {
         result.reload();
       }}><CustomerFields customer={customer} /></ApiForm>
     </section>
+    {user.role === 'ADMIN' && <section className="panel"><h2>Agent assignment</h2>
+      <DataState result={agents}>{records => {
+        const active = records.filter(agent => agent.active);
+        return active.length ? <ApiForm path={`/customers/${customer.id}/assign`} method="patch" action="Assign agent" onSuccess={result.reload}>
+          <label>Agent<select name="agentId" defaultValue={customer.agent?.id || ''} required>
+            <option value="" disabled>Choose an agent</option>
+            {active.map(agent => <option key={agent.id} value={agent.id}>{agent.name}</option>)}
+          </select></label>
+        </ApiForm> : <p>Create an active agent to assign this customer.</p>;
+      }}</DataState>
+    </section>}
     <section className="panel"><h2>Policy history</h2>
       <Table headers={['Policy', 'Type', 'Status', 'Expiry']} rows={customer.policies.map(policy => [
         policy.id, <Link to={`/policies/${policy.id}`}>{policy.number}</Link>, policy.type, <Status value={policy.status} />, day(policy.endDate),

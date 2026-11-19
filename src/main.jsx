@@ -5,6 +5,9 @@ import { Shell } from './layouts/Shell';
 import { AuthPage } from './pages/AuthPage';
 import { CustomerDetail, Customers } from './pages/Customers';
 import { Policies, PolicyDetail } from './pages/Policies';
+import { Claims, ClaimDetail } from './pages/Claims';
+import { Premiums } from './pages/Premiums';
+import { Agents } from './pages/Agents';
 import './styles.css';
 
 function RoleRoute({ roles, children }) {
@@ -17,6 +20,9 @@ function Navigation() {
   const links = [['/', 'Dashboard']];
   if (user && user.role !== 'CUSTOMER') links.push(['/customers', 'Customers']);
   links.push(['/policies', user?.role === 'CUSTOMER' ? 'My Policies' : 'Policies']);
+  links.push(['/claims', user?.role === 'CUSTOMER' ? 'My Claims' : user?.role === 'AGENT' ? 'Assigned Claims' : 'Claims']);
+  if (user?.role !== 'AGENT') links.push(['/premiums', user?.role === 'CUSTOMER' ? 'Premium Payments' : 'Premiums']);
+  if (user?.role === 'ADMIN') links.push(['/agents', 'Agents']);
   if (user?.role === 'CUSTOMER') links.push(['/profile', 'Profile']);
   return <Shell links={links} />;
 }
@@ -35,6 +41,10 @@ createRoot(document.getElementById('root')).render(<BrowserRouter><AuthProvider>
     <Route path="customers/:id" element={<RoleRoute roles={['ADMIN', 'AGENT']}><CustomerDetail /></RoleRoute>} />
     <Route path="policies" element={<Policies />} />
     <Route path="policies/:id" element={<PolicyDetail />} />
+    <Route path="claims" element={<Claims />} />
+    <Route path="claims/:id" element={<ClaimDetail />} />
+    <Route path="premiums" element={<RoleRoute roles={['ADMIN', 'CUSTOMER']}><Premiums /></RoleRoute>} />
+    <Route path="agents" element={<RoleRoute roles={['ADMIN']}><Agents /></RoleRoute>} />
     <Route path="profile" element={<RoleRoute roles={['CUSTOMER']}><CustomerDetail profile /></RoleRoute>} />
     <Route path="*" element={<Navigate to="/" replace />} />
   </Route>
