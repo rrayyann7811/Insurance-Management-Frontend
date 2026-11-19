@@ -13,7 +13,8 @@ export function Premiums() {
     <DataState result={list}>{data => <>
       <Table headers={['Policy', 'Customer', 'Amount', 'Due date', 'Status', 'Paid on', 'Action']}
         rows={data.items.map(payment => [payment.id, payment.policy.number, payment.policy.customer.user.name, money(payment.amount),
-          day(payment.dueDate), <Status value={payment.status} />, day(payment.paidAt),
+          day(payment.dueDate), payment.policy.status === 'CANCELLED' && payment.status !== 'PAID'
+            ? <span className="status cancelled">Closed · policy cancelled</span> : <Status value={payment.status} />, day(payment.paidAt),
           user.role === 'CUSTOMER' && payment.status !== 'PAID' && payment.policy.status !== 'CANCELLED' ?
             <Action path={`/premiums/${payment.id}/confirm`} onSuccess={list.reload}>Confirm simulated payment</Action> : '—',
         ])} />
