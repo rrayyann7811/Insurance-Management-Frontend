@@ -1,3 +1,4 @@
+import { DocumentPanel } from './Documents';
 import { Link, useParams } from 'react-router-dom';
 import { ApiForm, DataState, Status, Table } from '../components/Controls';
 import { useAuth } from '../context/Auth';
@@ -59,6 +60,7 @@ export function ClaimDetail() {
         <label>Review notes<textarea name="notes" required minLength={3} maxLength={2000} /></label>
       </ApiForm>
     </section>}
+    <DocumentPanel claim={claim} />
     </>;
   }}</DataState></>;
 }

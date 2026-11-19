@@ -39,3 +39,11 @@ td a { text-decoration: underline; overflow-wrap: anywhere; }
 .actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .8rem; }
 .action small { display: block; }
 .panel form { max-width: 35rem; margin-top: .7rem; }
+.metrics, .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.chart-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.metric { margin: 0; display: grid; gap: .3rem; }
+.metric strong { font-size: 1.55rem; }
+.dashboard-label { margin-bottom: 1rem; }
+.report-summary { display: grid; grid-template-columns: 1fr auto; max-width: 30rem; gap: .5rem 1rem; margin: 1rem 0; }
+.report-summary dd { text-align: right; }
+td .actions { margin: 0; }
