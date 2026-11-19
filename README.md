@@ -1,5 +1,36 @@
 # Insurance Management Frontend
 
+## Live Demo
+
+The Insurance Management Platform is deployed and accessible online.
+
+**Live Website:** https://insurance-management-frontend-weld.vercel.app
+
+### Project Repositories
+
+- Frontend: https://github.com/rrayyann7811/Insurance-Management-Frontend
+- Backend: https://github.com/rrayyann7811/Insurance-Management-Backend
+
+### Deployment
+
+- Frontend: Vercel
+- Backend: Render
+- Database: PostgreSQL (Render)
+
+### Test the Application
+
+The platform supports three user roles:
+
+1. Administrator
+2. Insurance Agent
+3. Customer
+
+Customers can register and log in to manage their insurance
+policies, premium payments, documents, and claims.
+
+Administrator and insurance-agent accounts are managed
+through the application.
+
 Run `npm ci`, copy `.env.example` to `.env`, and start with `npm run dev`. Start the API separately and set `VITE_API_URL` to its URL ending in `/api`. Create a production build with `npm run build`.
 
 ## Browser checks
