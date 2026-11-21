@@ -1,3 +1,4 @@
+import { PageHeading } from '../components/PageHeading';
 import { useState } from 'react';
 import { ApiForm, DataState } from '../components/Controls';
 import { Download } from '../components/Download';
@@ -8,7 +9,7 @@ export function Reports() {
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const path = `/reports/monthly?month=${month}`;
   const result = useData(month ? path : null);
-  return <><h1>Monthly business report</h1><section className="panel">
+  return <><PageHeading title="Monthly business report" description="Review monthly insurance activity and export a PDF for your records." /><section className="panel">
     <label>Report month<input type="month" value={month} onChange={event => setMonth(event.target.value)} required /></label>
     {month && <DataState result={result}>{report => <>
       <dl className="report-summary">
@@ -26,7 +27,7 @@ export function Reports() {
 
 export function Settings() {
   const result = useData('/settings');
-  return <><h1>Settings</h1><section className="panel"><DataState result={result}>{settings =>
+  return <><PageHeading title="Settings" description="Set the organization name and choose when policy expiry alerts appear." /><section className="panel"><DataState result={result}>{settings =>
     <ApiForm path="/settings" method="patch" action="Save settings" onSuccess={result.reload}>
       <label>Organization name<input name="organization" defaultValue={settings.organization} minLength={2} maxLength={100} required /></label>
       <label>Dashboard expiry alert window in days<input name="expiryAlertDays" type="number" min="1" max="90" defaultValue={settings.expiryAlertDays} required /></label>

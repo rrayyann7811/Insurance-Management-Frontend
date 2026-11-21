@@ -1,3 +1,4 @@
+import { PageAction, PageHeading } from '../components/PageHeading';
 import { passwordHelp, passwordPattern } from '../utils/password';
 import { ListFilters, Pagination, useList } from '../components/ListFilters';
 import { Link, useParams } from 'react-router-dom';
@@ -21,12 +22,14 @@ function CustomerFields({ customer }) {
 
 export function Customers() {
   const list = useList('/customers');
-  return <><h1>Customers</h1>
-    <section className="panel"><ListFilters list={list} /><DataState result={list}>{data => <><Table headers={['Name', 'Email', 'Agent', 'Account', 'Registered']}
+  return <><PageHeading title="Customers" description="Find customer accounts, review their coverage, and manage contact details.">
+      <PageAction to="#register-customer">Add customer</PageAction>
+    </PageHeading>
+    <section className="panel"><ListFilters list={list} /><DataState result={list}>{data => <><Table emptyDetail={list.params.has('q') || list.params.has('status') ? 'Try a different search or clear the filters.' : 'New records will appear here when available.'} headers={['Name', 'Email', 'Agent', 'Account', 'Registered']}
       rows={data.items.map(customer => [customer.id, <Link to={`/customers/${customer.id}`}>{customer.user.name}</Link>,
-        customer.user.email, customer.agent?.name || 'Unassigned', customer.archivedAt ? 'Archived' : 'Active', day(customer.createdAt)])} /><Pagination list={list} data={data} /></>}</DataState></section>
-    <section className="panel"><h2>Register customer</h2>
-      <ApiForm path="/customers" action="Register customer" onSuccess={list.reload}><CustomerFields /></ApiForm>
+        customer.user.email, customer.agent?.name || 'Unassigned', <Status value={customer.archivedAt ? 'ARCHIVED' : 'ACTIVE'} />, day(customer.createdAt)])} /><Pagination list={list} data={data} /></>}</DataState></section>
+    <section className="panel" id="register-customer" tabIndex={-1}><h2>Register customer</h2>
+      <ApiForm path="/customers" action="Register customer" columns onSuccess={list.reload}><CustomerFields /></ApiForm>
     </section>
   </>;
 }
@@ -37,7 +40,7 @@ export function CustomerDetail({ profile = false }) {
   const agents = useData(user.role === 'ADMIN' ? '/agents' : null);
   const path = `/customers/${profile ? 'me' : id}`;
   const result = useData(path);
-  return <><h1>{profile ? 'My profile' : 'Customer profile'}</h1><DataState result={result}>{customer => <>
+  return <><PageHeading title={profile ? 'My profile' : 'Customer profile'} description={profile ? "Update your contact information and review your insurance history." : "Manage contact details and review the customer’s insurance history."} /><DataState result={result}>{customer => <>
     <section className="panel">
       <h2>{customer.user.name}</h2><p className="muted">{customer.user.email}</p>
       {customer.archivedAt && <p className="notice">Archived {day(customer.archivedAt)}</p>}
@@ -46,7 +49,7 @@ export function CustomerDetail({ profile = false }) {
         if (profile) setUser(updated.user);
         result.reload();
       }}><CustomerFields customer={customer} /></ApiForm>
-      {user.role === 'ADMIN' && <div className="actions"><Action path={path} method="delete" onSuccess={result.reload}>Archive customer</Action></div>}
+      {user.role === 'ADMIN' && <div className="actions"><Action path={path} method="delete" confirmation="Archive this customer account? The customer will lose access to the portal." onSuccess={result.reload}>Archive customer</Action></div>}
       </>}
     </section>
     {user.role === 'ADMIN' && !customer.archivedAt && <section className="panel"><h2>Agent assignment</h2>
